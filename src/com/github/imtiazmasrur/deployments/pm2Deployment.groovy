@@ -24,9 +24,8 @@ class pm2Deployment implements Serializable {
     def checkoutCode() {
         try {
             // Check git status
-            script.sh "git status"
-            script.echo "✅ Git status checked successfully."
-
+            gitHelper.gitStatus()
+            
             def currentTag = gitHelper.getCurrentTag()
 
             // if current tag is not found or null then throw error
@@ -41,10 +40,9 @@ class pm2Deployment implements Serializable {
 
             script.echo "⚡️ Current Tag: ${currentTag}"
 
-            // if (currentTag != latestTag) {
+            if (currentTag != latestTag) {
                 // Fetch the latest changes
-                script.sh "git fetch"
-                script.echo "🪣 Git fetch completed successfully."
+                gitHelper.gitFetch()
 
                 // Set environment variables
                 LATEST_TAG = latestTag
@@ -52,18 +50,19 @@ class pm2Deployment implements Serializable {
 
                 script.echo "🔥 Latest Tag: ${LATEST_TAG}"
                 script.echo "🍀 Before Last Tag: ${BEFORE_LAST_TAG}"
-
-                script.sh "git checkout tags/${LATEST_TAG}"
+                
+                // Checkout to the latest tag
+                gitHelper.gitCheckout(LATEST_TAG)
 
                 // Set deployment status
                 DEPLOYMENT_STATUS = true
 
                 STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
-            // } else {
-            //     STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
-            //     script.echo "${STATUS_MESSAGE}"
-            // }
+            } else {
+                STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
+                script.echo "${STATUS_MESSAGE}"
+            }
         } catch (Exception e) {
             STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${projectDirectory}."
             script.echo "${STATUS_MESSAGE}"
@@ -72,25 +71,41 @@ class pm2Deployment implements Serializable {
     }
 
     def installDependencies() {
+        // Checkout the latest code
+        def checkoutCode = checkoutCode()
+        if (!checkoutCode) {
+            STATUS_MESSAGE = "⛔ Failed to checkout the latest code, please check your project directory and logs: ${projectDirectory}."
+            script.echo "${STATUS_MESSAGE}"
+            throw new Exception(STATUS_MESSAGE)
+        }
     }
 
     def build() {
     }
 
     def deploy() {
+        script.echo "Deploying the project..."
+        return this
     }
 
     def restart() {
+        script.echo "Restarting the project..."
+        return this
     }
 
     def healthCheck() {
+        script.echo "Checking the health of the project..."
+        return this
     }
 
     def rollback() {
+        script.echo "Rolling back the project..."
     }
 
     def getStatus() {
         checkoutCode()
+        
+        deploy.restart.healthCheck.rollback
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
