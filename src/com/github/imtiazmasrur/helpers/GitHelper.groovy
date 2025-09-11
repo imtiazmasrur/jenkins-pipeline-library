@@ -32,12 +32,16 @@ class GitHelper implements Serializable {
 
     // Function to get the latest Git tag
     def getLatestTag() {
-        return script.sh(script: "git tag -l --sort=-creatordate | head -n 1", returnStdout: true).trim()
+        def latestTag = script.sh(script: "git tag -l --sort=-creatordate | head -n 1", returnStdout: true).trim()
+        script.echo "🔥 Latest Tag: ${latestTag}"
+        return latestTag
     }
 
     // Function to get before last one tag
     def getBeforeLastTag() {
-        return script.sh(script: "git tag -l --sort=-creatordate | sed -n '2p'", returnStdout: true).trim()
+        def beforeLastTag = script.sh(script: "git tag -l --sort=-creatordate | sed -n '2p'", returnStdout: true).trim()
+        script.echo "🍀 Before Last Tag: ${beforeLastTag}"
+        return beforeLastTag
     }
 
 }

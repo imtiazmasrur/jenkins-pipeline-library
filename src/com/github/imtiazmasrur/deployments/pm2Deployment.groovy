@@ -43,20 +43,15 @@ class pm2Deployment implements Serializable {
             // Set environment variables
             LATEST_TAG = latestTag
             BEFORE_LAST_TAG = beforeLastTag
-            
+
             if (currentTag != latestTag) {
                 // Fetch the latest changes
                 gitHelper.gitFetch()
-
-                script.echo "🔥 Latest Tag: ${LATEST_TAG}"
-                script.echo "🍀 Before Last Tag: ${BEFORE_LAST_TAG}"
-                
                 // Checkout to the latest tag
                 gitHelper.gitCheckout(LATEST_TAG)
 
                 // Set deployment status
                 DEPLOYMENT_STATUS = true
-
                 // Start deployment
                 deploy()
 
