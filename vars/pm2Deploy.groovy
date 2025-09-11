@@ -5,10 +5,4 @@ def call(Map config) {
 
     def status = pm2.getStatus()
     echo "Deployment Status: ${status}"
-
-    // Get the current Git tag
-    // def currentTag = pm2.gitHelper.getCurrentTag()
-    // echo "Current Git Tag: ${currentTag}"
-    // def projectStatus = pm2.nodeJSHelper.checkProjectStatus(config.projectName)
-    // echo "Node.js Project Status: ${projectStatus}"
 }
