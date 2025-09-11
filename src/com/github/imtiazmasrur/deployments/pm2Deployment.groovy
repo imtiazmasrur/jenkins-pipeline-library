@@ -15,10 +15,10 @@ class pm2Deployment implements Serializable {
     def gitHelper
     def nodeJSHelper
 
-    pm2Deployment(script, nodeJSVersion, nodeJSPath, projectName, projectDirectory = ".") {
+    pm2Deployment(script, nodeJSVersion, nodeJSPath, projectName, projectDirectory) {
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(script, nodeJSVersion, nodeJSPath, projectName, projectDirectory)
+        this.nodeJSHelper = new NodeJSHelper(script, nodeJSVersion, nodeJSPath, projectName)
     }
 
     def checkoutCode() {
