@@ -1,9 +1,9 @@
-package com.github.imtiazmasrur.nodejs
+package com.github.imtiazmasrur.helpers
 
 /**
  * Utility class for Node.js related operations such as checking project status.
  */
-class NodeJS {
+class NodeJSHelper {
 
     // Node.js version and installation path
     String nodeJSVersion
@@ -11,7 +11,7 @@ class NodeJS {
     String projectName
 
     // Constructor to initialize Node.js version and path
-    NodeJS(String version, String path) {
+    NodeJSHelper(String version, String path) {
         this.nodeJSVersion = version
         this.nodeJSPath = path
     }

@@ -1,9 +1,9 @@
-package com.github.imtiazmasrur.git
+package com.github.imtiazmasrur.helpers
 
 /**
  * Utility class for Git related operations such as fetching tags.
  */
-class Git {
+class GitHelper {
 
     // Function to get the current Git tag
     String getCurrentTag() {
