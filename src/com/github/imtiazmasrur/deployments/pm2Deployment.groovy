@@ -57,6 +57,9 @@ class pm2Deployment implements Serializable {
                 // Set deployment status
                 DEPLOYMENT_STATUS = true
 
+                // Start deployment
+                deploy()
+
                 STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
             } else {
@@ -70,42 +73,70 @@ class pm2Deployment implements Serializable {
         }
     }
 
-    def installDependencies() {
-        // Checkout the latest code
-        def checkoutCode = checkoutCode()
-        if (!checkoutCode) {
-            STATUS_MESSAGE = "⛔ Failed to checkout the latest code, please check your project directory and logs: ${projectDirectory}."
-            script.echo "${STATUS_MESSAGE}"
-            throw new Exception(STATUS_MESSAGE)
-        }
-    }
-
     def build() {
     }
 
     def deploy() {
-        script.echo "Deploying the project..."
-        return this
-    }
+        if (DEPLOYMENT_STATUS) {
+            try {
+                def node = nodeJSHelper.getNodeJSPath()
+                script.sh "npm i"
+                script.sh "${node}/pm2 reload ${projectName}"
 
-    def restart() {
-        script.echo "Restarting the project..."
-        return this
+                STATUS_MESSAGE = "🚀 Project deployed successfully. 😎 ${LATEST_TAG}"
+                script.echo "${STATUS_MESSAGE}"
+            } catch (Exception e) {
+                // If deployment fails, set rollback status to true
+                ROLLBACK_STATUS = true
+
+                // Start rollback
+                rollback()
+
+                STATUS_MESSAGE = "↩️ Failed to deploy. Preparing for Rollback."
+                script.echo "${STATUS_MESSAGE}"
+            }
+        }
     }
 
     def healthCheck() {
-        script.echo "Checking the health of the project..."
-        return this
+        if (DEPLOYMENT_STATUS && !ROLLBACK_STATUS) {
+            // Wait for the project to start
+            sleep(15)
+            def projectStatus = nodeJSHelper.healthStatus(PROJECT_NAME)
+
+            // Check if the project is live
+            if (projectStatus) {
+                STATUS_MESSAGE = "🟢 Project is Live. 😎 ${LATEST_TAG}"
+                script.echo "${STATUS_MESSAGE}"
+            } else {
+                // If project is not live, set rollback status to true
+                ROLLBACK_STATUS = true
+
+                STATUS_MESSAGE = "🔴 Failed to bring project online. Preparing for Rollback"
+                script.echo "${STATUS_MESSAGE}"
+            }
+        }
     }
 
     def rollback() {
-        script.echo "Rolling back the project..."
+        if (ROLLBACK_STATUS) {
+            def nodeJSPath = getNodeJSPath()
+
+            script.sh "git checkout tags/${BEFORE_LAST_TAG}"
+            script.sh "npm i"
+            script.sh "${nodeJSPath}/pm2 reload ${PROJECT_NAME}"
+
+            STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
+            script.echo "${STATUS_MESSAGE}"
+        }
     }
 
     def getStatus() {
         checkoutCode()
+        deploy()
+        healthCheck()
+        rollback()
 
-        deploy().restart().healthCheck().rollback()
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,

@@ -24,7 +24,7 @@ class NodeJSHelper implements Serializable {
     }
 
     // Function to check the project is live
-    def checkProjectStatus(projectName) {
+    def healthStatus(projectName) {
         def nodePath = getNodeJSPath()
         return script.sh(script: "${nodePath}/pm2 pid ${projectName} | head -n 1", returnStdout: true).trim()
     }
