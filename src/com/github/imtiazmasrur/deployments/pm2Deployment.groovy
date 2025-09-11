@@ -41,7 +41,7 @@ class pm2Deployment implements Serializable {
 
             script.echo "⚡️ Current Tag: ${currentTag}"
 
-            if (currentTag != latestTag) {
+            // if (currentTag != latestTag) {
                 // Fetch the latest changes
                 script.sh "git fetch"
                 script.echo "🪣 Git fetch completed successfully."
@@ -60,10 +60,10 @@ class pm2Deployment implements Serializable {
 
                 STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
-            } else {
-                STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
-                script.echo "${STATUS_MESSAGE}"
-            }
+            // } else {
+            //     STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
+            //     script.echo "${STATUS_MESSAGE}"
+            // }
         } catch (Exception e) {
             STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${projectDirectory}."
             script.echo "${STATUS_MESSAGE}"
@@ -87,6 +87,16 @@ class pm2Deployment implements Serializable {
     }
 
     def rollback() {
+    }
+
+    def getStatus() {
+        return [
+                "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
+                "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
+                "STATUS_MESSAGE"   : STATUS_MESSAGE,
+                "LATEST_TAG"       : LATEST_TAG,
+                "BEFORE_LAST_TAG"  : BEFORE_LAST_TAG
+        ]
     }
 
 }
