@@ -104,8 +104,8 @@ class pm2Deployment implements Serializable {
 
     def getStatus() {
         checkoutCode()
-        
-        deploy.restart.healthCheck.rollback
+
+        deploy().restart().healthCheck().rollback()
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
