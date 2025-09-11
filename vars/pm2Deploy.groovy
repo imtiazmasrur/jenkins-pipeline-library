@@ -3,7 +3,7 @@ import com.github.imtiazmasrur.helpers.NodeJSHelper
 
 def call(Map config) {
     def gitHelper = new GitHelper(this)
-    def nodeJSHelper = new NodeJSHelper(config.nodeJSVersion, config.nodeJSPath, config.projectName)
+    def nodeJSHelper = new NodeJSHelper(this, config.nodeJSVersion, config.nodeJSPath, config.projectName)
 
     // Get the current Git tag
     def currentTag = gitHelper.getCurrentTag()

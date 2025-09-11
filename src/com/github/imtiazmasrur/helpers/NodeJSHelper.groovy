@@ -5,27 +5,28 @@ package com.github.imtiazmasrur.helpers
  */
 class NodeJSHelper implements Serializable {
 
-    // Node.js version and installation path
-    String nodeJSVersion
-    String nodeJSPath
-    String projectName
+    def script
+    def nodeJSVersion
+    def nodeJSPath
+    def projectName
 
     // Constructor to initialize Node.js version and path
-    NodeJSHelper(String version, String path, String projectName) {
-        this.nodeJSVersion = version
-        this.nodeJSPath = path
+    NodeJSHelper(script, nodeJSVersion, nodeJSPath, projectName) {
+        this.script = script
+        this.nodeJSVersion = nodeJSVersion
+        this.nodeJSPath = nodeJSPath
         this.projectName = projectName
     }
 
     // Function to get the Node.js path
-    String getNodeJSPath() {
-        return "${this.nodeJSPath}/v${this.nodeJSVersion}/bin"
+    def getNodeJSPath() {
+        return "${nodeJSPath}/v${nodeJSVersion}/bin"
     }
 
     // Function to check the project is live
-    String checkProjectStatus(String projectName) {
-        String nodeJSPath = this.getNodeJSPath()
-        return sh(script: "${nodeJSPath}/pm2 pid ${projectName} | head -n 1", returnStdout: true).trim()
+    def checkProjectStatus(projectName) {
+        def nodePath = getNodeJSPath()
+        return script.sh(script: "${nodePath}/pm2 pid ${projectName} | head -n 1", returnStdout: true).trim()
     }
 
 }
