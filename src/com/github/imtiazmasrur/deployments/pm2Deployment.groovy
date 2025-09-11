@@ -90,6 +90,7 @@ class pm2Deployment implements Serializable {
     }
 
     def getStatus() {
+        checkoutCode()
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
