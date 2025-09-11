@@ -3,7 +3,7 @@ package com.github.imtiazmasrur.helpers
 /**
  * Utility class for Node.js related operations such as checking project status.
  */
-class NodeJSHelper {
+class NodeJSHelper implements Serializable {
 
     // Node.js version and installation path
     String nodeJSVersion
