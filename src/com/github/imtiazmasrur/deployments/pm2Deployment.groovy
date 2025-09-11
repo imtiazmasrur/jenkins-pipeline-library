@@ -35,18 +35,18 @@ class pm2Deployment implements Serializable {
                 throw new Exception(STATUS_MESSAGE)
             }
 
-            def latestTag = gitHelper.getLatestTag()
-            def beforeLastTag = gitHelper.getBeforeLastTag()
-
             script.echo "⚡️ Current Tag: ${currentTag}"
 
+            def latestTag = gitHelper.getLatestTag()
+            def beforeLastTag = gitHelper.getBeforeLastTag()
+            
+            // Set environment variables
+            LATEST_TAG = latestTag
+            BEFORE_LAST_TAG = beforeLastTag
+            
             if (currentTag != latestTag) {
                 // Fetch the latest changes
                 gitHelper.gitFetch()
-
-                // Set environment variables
-                LATEST_TAG = latestTag
-                BEFORE_LAST_TAG = beforeLastTag
 
                 script.echo "🔥 Latest Tag: ${LATEST_TAG}"
                 script.echo "🍀 Before Last Tag: ${BEFORE_LAST_TAG}"
