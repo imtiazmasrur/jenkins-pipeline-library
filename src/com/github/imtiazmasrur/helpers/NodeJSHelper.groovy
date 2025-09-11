@@ -11,9 +11,10 @@ class NodeJSHelper implements Serializable {
     String projectName
 
     // Constructor to initialize Node.js version and path
-    NodeJSHelper(String version, String path) {
+    NodeJSHelper(String version, String path, String projectName) {
         this.nodeJSVersion = version
         this.nodeJSPath = path
+        this.projectName = projectName
     }
 
     // Function to get the Node.js path
