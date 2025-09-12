@@ -9,26 +9,26 @@ def call(Map config) {
         }
     }
     stage('Deployment Started...') {
-        when {
-            expression { return nodeJS.DEPLOYMENT_STATUS }
-        }
         dir("${config.projectDirectory}") {
+            when {
+                expression { return nodeJS.DEPLOYMENT_STATUS }
+            }
             nodeJS.deploy()
         }
     }
     stage('Health Check...') {
-        when {
-            expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
-        }
         dir("${config.projectDirectory}") {
+            when {
+                expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
+            }
             nodeJS.healthCheck()
         }
     }
     stage('Rollback Started...') {
-        when {
-            expression { return nodeJS.ROLLBACK_STATUS }
-        }
         dir("${config.projectDirectory}") {
+            when {
+                expression { return nodeJS.ROLLBACK_STATUS }
+            }
             nodeJS.rollback()
         }
     }
