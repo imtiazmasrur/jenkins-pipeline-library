@@ -4,25 +4,41 @@ def call(Map config) {
     def nodeJS = new NodeJSDeployment(this, config)
 
     stage('Check Git Status, CheckOut Latest Tag...') {
-        nodeJS.checkoutCode()
+        steps {
+            script {
+                nodeJS.checkoutCode()
+            }
+        }
     }
     stage('Deployment Started...') {
         when {
             expression { return nodeJS.DEPLOYMENT_STATUS }
         }
-        nodeJS.deploy()
+        steps {
+            script {
+                nodeJS.deploy()
+            }
+        }
     }
     stage('Health Check...') {
         when {
             expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
         }
-        nodeJS.healthCheck()
+        steps {
+            script {
+                nodeJS.healthCheck()
+            }
+        }
     }
     stage('Rollback Started...') {
         when {
             expression { return nodeJS.ROLLBACK_STATUS }
         }
-        nodeJS.rollback()
+        steps {
+            script {
+                nodeJS.rollback()
+            }
+        }
     }
 
     def status = nodeJS.getStatus()
