@@ -22,7 +22,7 @@ class NodeJSDeployment implements Serializable {
 
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(script, config.nodeJSVersion, config.nodeJSPath, config.projectName)
+        this.nodeJSHelper = new NodeJSHelper(script, [nodeJSVersion: config.nodeJSVersion, nodeJSPath: config.nodeJSPath, projectName: config.projectName])
     }
 
     def checkoutCode() {
