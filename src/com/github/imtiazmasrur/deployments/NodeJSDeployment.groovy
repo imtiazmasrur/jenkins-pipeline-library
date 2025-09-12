@@ -128,7 +128,7 @@ class NodeJSDeployment implements Serializable {
 
     def rollback() {
         // if (ROLLBACK_STATUS) {
-            def nodeJSPath = getNodeJSPath()
+            def nodeJSPath = NodeJSHelper.getNodeJSPath()
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
             script.sh "npm i"
