@@ -131,10 +131,10 @@ class NodeJSDeployment implements Serializable {
     }
 
     def getStatus() {
-        checkoutCode()
-        deploy()
-        healthCheck()
-        rollback()
+        // checkoutCode()
+        // deploy()
+        // healthCheck()
+        // rollback()
 
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
