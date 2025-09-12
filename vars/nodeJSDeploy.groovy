@@ -25,10 +25,8 @@ def call(Map config) {
     stage('Rollback Started...') {
         expression { return nodeJS.ROLLBACK_STATUS }
 
-        steps {
-            script {
-                nodeJS.rollback()
-            }
+        dir("${config.projectDirectory}") {
+            nodeJS.rollback()
         }
     }
 
