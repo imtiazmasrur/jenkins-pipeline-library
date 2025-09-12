@@ -3,7 +3,7 @@ package com.github.imtiazmasrur.deployments
 import com.github.imtiazmasrur.helpers.GitHelper
 import com.github.imtiazmasrur.helpers.NodeJSHelper
 
-class pm2Deployment implements Serializable {
+class NodeJSDeployment implements Serializable {
 
     def static ROLLBACK_STATUS = false
     def static DEPLOYMENT_STATUS = false
@@ -15,10 +15,14 @@ class pm2Deployment implements Serializable {
     def gitHelper
     def nodeJSHelper
 
-    pm2Deployment(script, nodeJSVersion, nodeJSPath, projectName, projectDirectory) {
+    NodeJSDeployment(script, Map config) {
+        if (!config.nodeJSVersion && !config.nodeJSPath && !config.projectName && !config.projectDirectory) {
+            throw new Exception("nodeJSVersion, nodeJSPath, projectName, and projectDirectory are required.")
+        }
+
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(script, nodeJSVersion, nodeJSPath, projectName)
+        this.nodeJSHelper = new NodeJSHelper(script, config)
     }
 
     def checkoutCode() {

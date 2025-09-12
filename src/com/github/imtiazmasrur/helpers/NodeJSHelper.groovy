@@ -11,11 +11,14 @@ class NodeJSHelper implements Serializable {
     def projectName
 
     // Constructor to initialize Node.js version and path
-    NodeJSHelper(script, nodeJSVersion, nodeJSPath, projectName) {
+    NodeJSHelper(script, Map config) {
+        if (!config.nodeJSVersion && !config.nodeJSPath && !config.projectName) {
+            throw new Exception("nodeJSVersion, nodeJSPath and projectName are required.")
+        }
         this.script = script
-        this.nodeJSVersion = nodeJSVersion
-        this.nodeJSPath = nodeJSPath
-        this.projectName = projectName
+        this.nodeJSVersion = config.nodeJSVersion
+        this.nodeJSPath = config.nodeJSPath
+        this.projectName = config.projectName
     }
 
     // Function to get the Node.js path
