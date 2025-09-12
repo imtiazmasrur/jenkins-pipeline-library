@@ -12,7 +12,7 @@ class NodeJSHelper implements Serializable {
 
     // Constructor to initialize Node.js version and path
     NodeJSHelper(script, Map config) {
-        if (!config.nodeJSVersion && !config.nodeJSPath && !config.projectName) {
+        if (!config.nodeJSVersion || !config.nodeJSPath || !config.projectName) {
             throw new Exception("nodeJSVersion, nodeJSPath and projectName are required.")
         }
         this.script = script

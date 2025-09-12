@@ -16,7 +16,7 @@ class NodeJSDeployment implements Serializable {
     def nodeJSHelper
 
     NodeJSDeployment(script, Map config) {
-        if (!config.nodeJSVersion && !config.nodeJSPath && !config.projectName && !config.projectDirectory) {
+        if (!config.nodeJSVersion || !config.nodeJSPath || !config.projectName || !config.projectDirectory) {
             throw new Exception("nodeJSVersion, nodeJSPath, projectName, and projectDirectory are required.")
         }
 
