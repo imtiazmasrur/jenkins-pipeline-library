@@ -24,7 +24,7 @@ def call(Map config) {
     }
     stage('Rollback Started...') {
         expression { return nodeJS.ROLLBACK_STATUS }
-        
+
         steps {
             script {
                 nodeJS.rollback()
@@ -32,7 +32,5 @@ def call(Map config) {
         }
     }
 
-    def status = nodeJS.getStatus()
-
-    echo "Deployment Status: ${status}"
+    return nodeJS.getStatus()
 }

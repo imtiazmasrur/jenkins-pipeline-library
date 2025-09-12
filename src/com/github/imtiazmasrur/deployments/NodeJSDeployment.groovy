@@ -110,7 +110,7 @@ class NodeJSDeployment implements Serializable {
         // if (DEPLOYMENT_STATUS && !ROLLBACK_STATUS) {
             // Wait for the project to start
             sleep(15)
-            def projectStatus = nodeJSHelper.healthStatus(PROJECT_NAME)
+            def projectStatus = nodeJSHelper.healthStatus(config.projectName)
 
             // Check if the project is live
             if (projectStatus) {
@@ -132,7 +132,7 @@ class NodeJSDeployment implements Serializable {
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
             script.sh "npm i"
-            script.sh "${nodeJSPath}/pm2 reload ${PROJECT_NAME}"
+            script.sh "${nodeJSPath}/pm2 reload ${config.projectName}"
 
             STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
             script.echo "${STATUS_MESSAGE}"
@@ -140,11 +140,6 @@ class NodeJSDeployment implements Serializable {
     }
 
     def getStatus() {
-        // checkoutCode()
-        // deploy()
-        // healthCheck()
-        // rollback()
-
         return [
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
