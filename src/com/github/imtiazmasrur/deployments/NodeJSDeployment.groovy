@@ -57,7 +57,7 @@ class NodeJSDeployment implements Serializable {
                 // Set deployment status
                 DEPLOYMENT_STATUS = true
                 // Start deployment
-                deploy()
+                // deploy()
 
                 STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
@@ -76,7 +76,7 @@ class NodeJSDeployment implements Serializable {
     }
 
     def deploy() {
-        if (DEPLOYMENT_STATUS) {
+        // if (DEPLOYMENT_STATUS) {
             try {
                 def node = nodeJSHelper.getNodeJSPath()
                 script.sh "npm i"
@@ -89,16 +89,16 @@ class NodeJSDeployment implements Serializable {
                 ROLLBACK_STATUS = true
 
                 // Start rollback
-                rollback()
+                // rollback()
 
                 STATUS_MESSAGE = "↩️ Failed to deploy. Preparing for Rollback."
                 script.echo "${STATUS_MESSAGE}"
             }
-        }
+        // }
     }
 
     def healthCheck() {
-        if (DEPLOYMENT_STATUS && !ROLLBACK_STATUS) {
+        // if (DEPLOYMENT_STATUS && !ROLLBACK_STATUS) {
             // Wait for the project to start
             sleep(15)
             def projectStatus = nodeJSHelper.healthStatus(PROJECT_NAME)
@@ -114,11 +114,11 @@ class NodeJSDeployment implements Serializable {
                 STATUS_MESSAGE = "🔴 Failed to bring project online. Preparing for Rollback"
                 script.echo "${STATUS_MESSAGE}"
             }
-        }
+        // }
     }
 
     def rollback() {
-        if (ROLLBACK_STATUS) {
+        // if (ROLLBACK_STATUS) {
             def nodeJSPath = getNodeJSPath()
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
@@ -127,7 +127,7 @@ class NodeJSDeployment implements Serializable {
 
             STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
             script.echo "${STATUS_MESSAGE}"
-        }
+        // }
     }
 
     def getStatus() {

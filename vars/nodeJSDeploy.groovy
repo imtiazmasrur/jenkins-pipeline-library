@@ -7,12 +7,21 @@ def call(Map config) {
         nodeJS.checkoutCode()
     }
     stage('Deployment Started...') {
+        when {
+            expression { return nodeJS.DEPLOYMENT_STATUS }
+        }
         nodeJS.deploy()
     }
     stage('Health Check...') {
+        when {
+            expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
+        }
         nodeJS.healthCheck()
     }
-    stage('Rollback if required...') {
+    stage('Rollback Started...') {
+        when {
+            expression { return nodeJS.ROLLBACK_STATUS }
+        }
         nodeJS.rollback()
     }
 
