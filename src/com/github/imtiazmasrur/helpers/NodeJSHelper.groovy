@@ -6,9 +6,7 @@ package com.github.imtiazmasrur.helpers
 class NodeJSHelper implements Serializable {
 
     def script
-    def nodeJSVersion
-    def nodeJSPath
-    def projectName
+    def config
 
     // Constructor to initialize Node.js version and path
     NodeJSHelper(script, Map config) {
@@ -16,20 +14,18 @@ class NodeJSHelper implements Serializable {
             throw new Exception("nodeJSVersion, nodeJSPath and projectName are required.")
         }
         this.script = script
-        this.nodeJSVersion = config.nodeJSVersion
-        this.nodeJSPath = config.nodeJSPath
-        this.projectName = config.projectName
+        this.config = config
     }
 
     // Function to get the Node.js path
     def getNodeJSPath() {
-        return "${nodeJSPath}/v${nodeJSVersion}/bin"
+        return "${config.nodeJSPath}/v${config.nodeJSVersion}/bin"
     }
 
     // Function to check the project is live
     def healthStatus(projectName) {
-        def nodePath = getNodeJSPath()
-        return script.sh(script: "${nodePath}/pm2 pid ${projectName} | head -n 1", returnStdout: true).trim()
+        def nodeJS = getNodeJSPath()
+        return script.sh(script: "${nodeJS}/pm2 pid ${config.projectName} | head -n 1", returnStdout: true).trim()
     }
 
 }

@@ -14,6 +14,7 @@ class NodeJSDeployment implements Serializable {
     def script
     def gitHelper
     def nodeJSHelper
+    def config
 
     NodeJSDeployment(script, Map config) {
         if (!config.nodeJSVersion || !config.nodeJSPath || !config.projectName || !config.projectDirectory) {
@@ -22,7 +23,15 @@ class NodeJSDeployment implements Serializable {
 
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(script, [nodeJSVersion: config.nodeJSVersion, nodeJSPath: config.nodeJSPath, projectName: config.projectName])
+        this.nodeJSHelper = new NodeJSHelper(
+            script,
+            [
+                nodeJSVersion: config.nodeJSVersion,
+                nodeJSPath: config.nodeJSPath,
+                projectName: config.projectName
+            ]
+        )
+        this.config = config
     }
 
     def checkoutCode() {
@@ -35,7 +44,7 @@ class NodeJSDeployment implements Serializable {
 
                 // if current tag is not found or null then throw error
                 if (!currentTag || currentTag == "") {
-                    STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${projectDirectory}."
+                    STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${config.projectDirectory}."
                     script.echo "${STATUS_MESSAGE}"
                     throw new Exception(STATUS_MESSAGE)
                 }
