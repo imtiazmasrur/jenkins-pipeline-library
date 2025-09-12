@@ -4,7 +4,9 @@ def call(Map config) {
     def nodeJS = new NodeJSDeployment(this, config)
 
     stage('Check Git Status, CheckOut Latest Tag...') {
-        nodeJS.checkoutCode()
+        dir("${config.projectDirectory}") {
+            nodeJS.checkoutCode()
+        }
     }
     // stage('Deployment Started...') {
     //     when {

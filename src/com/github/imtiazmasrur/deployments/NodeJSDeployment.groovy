@@ -35,51 +35,49 @@ class NodeJSDeployment implements Serializable {
     }
 
     def checkoutCode() {
-        dir("${config.projectDirectory}") {
-            try {
-                // Check git status
-                gitHelper.gitStatus()
-                
-                def currentTag = gitHelper.getCurrentTag()
+        try {
+            // Check git status
+            gitHelper.gitStatus()
+            
+            def currentTag = gitHelper.getCurrentTag()
 
-                // if current tag is not found or null then throw error
-                if (!currentTag || currentTag == "") {
-                    STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${config.projectDirectory}."
-                    script.echo "${STATUS_MESSAGE}"
-                    throw new Exception(STATUS_MESSAGE)
-                }
-
-                script.echo "⚡️ Current Tag: ${currentTag}"
-
-                def latestTag = gitHelper.getLatestTag()
-                def beforeLastTag = gitHelper.getBeforeLastTag()
-                
-                // Set environment variables
-                LATEST_TAG = latestTag
-                BEFORE_LAST_TAG = beforeLastTag
-
-                if (currentTag != latestTag) {
-                    // Fetch the latest changes
-                    gitHelper.gitFetch()
-                    // Checkout to the latest tag
-                    gitHelper.gitCheckout(LATEST_TAG)
-
-                    // Set deployment status
-                    DEPLOYMENT_STATUS = true
-                    // Start deployment
-                    // deploy()
-
-                    STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
-                    script.echo "${STATUS_MESSAGE}"
-                } else {
-                    STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
-                    script.echo "${STATUS_MESSAGE}"
-                }
-            } catch (Exception e) {
-                STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${config.projectDirectory}."
+            // if current tag is not found or null then throw error
+            if (!currentTag || currentTag == "") {
+                STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${config.projectDirectory}."
                 script.echo "${STATUS_MESSAGE}"
                 throw new Exception(STATUS_MESSAGE)
             }
+
+            script.echo "⚡️ Current Tag: ${currentTag}"
+
+            def latestTag = gitHelper.getLatestTag()
+            def beforeLastTag = gitHelper.getBeforeLastTag()
+            
+            // Set environment variables
+            LATEST_TAG = latestTag
+            BEFORE_LAST_TAG = beforeLastTag
+
+            if (currentTag != latestTag) {
+                // Fetch the latest changes
+                gitHelper.gitFetch()
+                // Checkout to the latest tag
+                gitHelper.gitCheckout(LATEST_TAG)
+
+                // Set deployment status
+                DEPLOYMENT_STATUS = true
+                // Start deployment
+                // deploy()
+
+                STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
+                script.echo "${STATUS_MESSAGE}"
+            } else {
+                STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
+                script.echo "${STATUS_MESSAGE}"
+            }
+        } catch (Exception e) {
+            STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${config.projectDirectory}."
+            script.echo "${STATUS_MESSAGE}"
+            throw new Exception(STATUS_MESSAGE)
         }
     }
 
