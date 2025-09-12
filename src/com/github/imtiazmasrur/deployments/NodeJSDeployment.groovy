@@ -22,53 +22,55 @@ class NodeJSDeployment implements Serializable {
 
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(script, config)
+        this.nodeJSHelper = new NodeJSHelper(script, config.nodeJSVersion, config.nodeJSPath, config.projectName)
     }
 
     def checkoutCode() {
-        try {
-            // Check git status
-            gitHelper.gitStatus()
-            
-            def currentTag = gitHelper.getCurrentTag()
+        dir("${config.projectDirectory}") {
+            try {
+                // Check git status
+                gitHelper.gitStatus()
+                
+                def currentTag = gitHelper.getCurrentTag()
 
-            // if current tag is not found or null then throw error
-            if (!currentTag || currentTag == "") {
-                STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${projectDirectory}."
+                // if current tag is not found or null then throw error
+                if (!currentTag || currentTag == "") {
+                    STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${projectDirectory}."
+                    script.echo "${STATUS_MESSAGE}"
+                    throw new Exception(STATUS_MESSAGE)
+                }
+
+                script.echo "⚡️ Current Tag: ${currentTag}"
+
+                def latestTag = gitHelper.getLatestTag()
+                def beforeLastTag = gitHelper.getBeforeLastTag()
+                
+                // Set environment variables
+                LATEST_TAG = latestTag
+                BEFORE_LAST_TAG = beforeLastTag
+
+                if (currentTag != latestTag) {
+                    // Fetch the latest changes
+                    gitHelper.gitFetch()
+                    // Checkout to the latest tag
+                    gitHelper.gitCheckout(LATEST_TAG)
+
+                    // Set deployment status
+                    DEPLOYMENT_STATUS = true
+                    // Start deployment
+                    // deploy()
+
+                    STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
+                    script.echo "${STATUS_MESSAGE}"
+                } else {
+                    STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
+                    script.echo "${STATUS_MESSAGE}"
+                }
+            } catch (Exception e) {
+                STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${config.projectDirectory}."
                 script.echo "${STATUS_MESSAGE}"
                 throw new Exception(STATUS_MESSAGE)
             }
-
-            script.echo "⚡️ Current Tag: ${currentTag}"
-
-            def latestTag = gitHelper.getLatestTag()
-            def beforeLastTag = gitHelper.getBeforeLastTag()
-            
-            // Set environment variables
-            LATEST_TAG = latestTag
-            BEFORE_LAST_TAG = beforeLastTag
-
-            if (currentTag != latestTag) {
-                // Fetch the latest changes
-                gitHelper.gitFetch()
-                // Checkout to the latest tag
-                gitHelper.gitCheckout(LATEST_TAG)
-
-                // Set deployment status
-                DEPLOYMENT_STATUS = true
-                // Start deployment
-                // deploy()
-
-                STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
-                script.echo "${STATUS_MESSAGE}"
-            } else {
-                STATUS_MESSAGE = "✅ Project is already on the latest tag: ${currentTag}"
-                script.echo "${STATUS_MESSAGE}"
-            }
-        } catch (Exception e) {
-            STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${projectDirectory}."
-            script.echo "${STATUS_MESSAGE}"
-            throw new Exception(STATUS_MESSAGE)
         }
     }
 
@@ -80,7 +82,7 @@ class NodeJSDeployment implements Serializable {
             try {
                 def node = nodeJSHelper.getNodeJSPath()
                 script.sh "npm i"
-                script.sh "${node}/pm2 reload ${projectName}"
+                script.sh "${node}/pm2 reload ${config.projectName}"
 
                 STATUS_MESSAGE = "🚀 Project deployed successfully. 😎 ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
