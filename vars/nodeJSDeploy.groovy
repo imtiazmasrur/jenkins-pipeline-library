@@ -9,31 +9,30 @@ def call(Map config) {
         }
     }
     stage('Deployment Started...') {
-        nodeJS.script.when {
-            expression { return nodeJS.DEPLOYMENT_STATUS }
-        }
+        expression { return nodeJS.DEPLOYMENT_STATUS }
+        
         dir("${config.projectDirectory}") {
             nodeJS.deploy()
         }
     }
-    stage('Health Check...') {
-        nodeJS.script.when {
-            expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
-        }
-        dir("${config.projectDirectory}") {
-            nodeJS.healthCheck()
-        }
-    }
-    stage('Rollback Started...') {
-        nodeJS.script.when {
-            expression { return nodeJS.ROLLBACK_STATUS }
-        }
-        steps {
-            script {
-                nodeJS.rollback()
-            }
-        }
-    }
+    // stage('Health Check...') {
+    //     nodeJS.script.when {
+    //         expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
+    //     }
+    //     dir("${config.projectDirectory}") {
+    //         nodeJS.healthCheck()
+    //     }
+    // }
+    // stage('Rollback Started...') {
+    //     nodeJS.script.when {
+    //         expression { return nodeJS.ROLLBACK_STATUS }
+    //     }
+    //     steps {
+    //         script {
+    //             nodeJS.rollback()
+    //         }
+    //     }
+    // }
 
     def status = nodeJS.getStatus()
 
