@@ -3,7 +3,7 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
 def call(Map config) {
     def nodeJS = new NodeJSDeployment(this, config)
 
-    node {
+    stages {
         stage('Check Git Status, CheckOut Latest Tag...') {
             steps {
                 script {
