@@ -9,7 +9,7 @@ def call(Map config) {
         }
     }
     stage('Deployment Started...') {
-        script.when {
+        nodeJS.script.when {
             expression { return nodeJS.DEPLOYMENT_STATUS }
         }
         dir("${config.projectDirectory}") {
@@ -17,7 +17,7 @@ def call(Map config) {
         }
     }
     stage('Health Check...') {
-        script.when {
+        nodeJS.script.when {
             expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
         }
         dir("${config.projectDirectory}") {
@@ -25,7 +25,7 @@ def call(Map config) {
         }
     }
     stage('Rollback Started...') {
-        script.when {
+        nodeJS.script.when {
             expression { return nodeJS.ROLLBACK_STATUS }
         }
         steps {
