@@ -4,11 +4,7 @@ def call(Map config) {
     def nodeJS = new NodeJSDeployment(this, config)
 
     stage('Check Git Status, CheckOut Latest Tag...') {
-        steps {
-            script {
-                nodeJS.checkoutCode()
-            }
-        }
+        nodeJS.checkoutCode()
     }
     // stage('Deployment Started...') {
     //     when {
