@@ -24,8 +24,8 @@ class NodeJSHelper implements Serializable {
 
     // Function to check the project is live
     def healthStatus(projectName) {
-        def nodeJS = getNodeJSPath()
-        return script.sh(script: "${nodeJS}/pm2 pid ${config.projectName} | head -n 1", returnStdout: true).trim()
+        def node = getNodeJSPath()
+        return script.sh(script: "${node}/pm2 pid ${config.projectName} | head -n 1", returnStdout: true).trim()
     }
 
 }

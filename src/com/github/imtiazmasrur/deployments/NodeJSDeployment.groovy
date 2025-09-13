@@ -128,11 +128,11 @@ class NodeJSDeployment implements Serializable {
 
     def rollback() {
         // if (ROLLBACK_STATUS) {
-            def nodeJSPath = NodeJSHelper.getNodeJSPath()
+            def node = nodeJSHelper.getNodeJSPath()
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
             script.sh "npm i"
-            script.sh "${nodeJSPath}/pm2 reload ${config.projectName}"
+            script.sh "${node}/pm2 reload ${config.projectName}"
 
             STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
             script.echo "${STATUS_MESSAGE}"
