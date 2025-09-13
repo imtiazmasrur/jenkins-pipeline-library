@@ -8,25 +8,26 @@ def call(Map config) {
             nodeJS.checkoutCode()
         }
     }
-    stage('Deployment Started...') {
-        expression { return nodeJS.DEPLOYMENT_STATUS }
-
-        dir("${config.projectDirectory}") {
-            nodeJS.deploy()
+    if (nodeJS.DEPLOYMENT_STATUS) {
+        stage('Deployment Started...') {
+            dir("${config.projectDirectory}") {
+                nodeJS.deploy()
+            }
         }
     }
-    stage('Health Check...') {
-        expression { return nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS }
-
-        dir("${config.projectDirectory}") {
-            nodeJS.healthCheck()
+    if (nodeJS.DEPLOYMENT_STATUS && !nodeJS.ROLLBACK_STATUS) {
+        stage('Health Check...') {
+            dir("${config.projectDirectory}") {
+                nodeJS.healthCheck()
+            }
         }
     }
-    stage('Rollback Started...') {
-        expression { return nodeJS.ROLLBACK_STATUS }
-
-        dir("${config.projectDirectory}") {
-            nodeJS.rollback()
+    
+    if (nodeJS.ROLLBACK_STATUS){
+        stage('Rollback Started...') {
+            dir("${config.projectDirectory}") {
+                nodeJS.rollback()
+            }
         }
     }
 
