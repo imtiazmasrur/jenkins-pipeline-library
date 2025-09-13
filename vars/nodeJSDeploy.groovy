@@ -22,7 +22,6 @@ def call(Map config) {
             }
         }
     }
-    
     if (nodeJS.ROLLBACK_STATUS){
         stage('Rollback Started...') {
             dir("${config.projectDirectory}") {
