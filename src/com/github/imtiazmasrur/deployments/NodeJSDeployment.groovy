@@ -146,7 +146,7 @@ class NodeJSDeployment implements Serializable {
         
         script.sh "${node}/pm2 save"
 
-        echo "======================== PM2 LOGS ========================"
+        script.echo "======================== PM2 LOGS ========================"
         script.sh "${node}/pm2 logs ${config.projectName} --lines ${lines} --nostream"
     }
 
