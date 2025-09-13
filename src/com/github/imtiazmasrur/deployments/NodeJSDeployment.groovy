@@ -46,7 +46,6 @@ class NodeJSDeployment implements Serializable {
             ]
         )
         this.config = config
-        this.isBuildRequired = config.isBuildRequired ?: false
     }
 
     def checkoutCode() {
@@ -103,7 +102,7 @@ class NodeJSDeployment implements Serializable {
             try {
                 def node = nodeJSHelper.getNodeJSPath()
                 script.sh "npm i"
-                if (isBuildRequired) {
+                if (config.isBuildRequired) {
                     build()
                 }
                 script.sh "${node}/pm2 reload ${config.projectName}"
@@ -148,7 +147,7 @@ class NodeJSDeployment implements Serializable {
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
             script.sh "npm i"
-            if (isBuildRequired) {
+            if (config.isBuildRequired) {
                 build()
             }
             script.sh "${node}/pm2 reload ${config.projectName}"
