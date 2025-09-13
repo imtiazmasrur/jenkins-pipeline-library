@@ -65,8 +65,6 @@ class NodeJSDeployment implements Serializable {
 
                 // Set deployment status
                 DEPLOYMENT_STATUS = true
-                // Start deployment
-                // deploy()
 
                 STATUS_MESSAGE = "🔥 Checked out to the latest tag: ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
@@ -97,9 +95,6 @@ class NodeJSDeployment implements Serializable {
                 // If deployment fails, set rollback status to true
                 ROLLBACK_STATUS = true
 
-                // Start rollback
-                // rollback()
-
                 STATUS_MESSAGE = "↩️ Failed to deploy. Preparing for Rollback."
                 script.echo "${STATUS_MESSAGE}"
             }
@@ -116,6 +111,8 @@ class NodeJSDeployment implements Serializable {
             if (projectStatus) {
                 STATUS_MESSAGE = "🟢 Project is Live. 😎 ${LATEST_TAG}"
                 script.echo "${STATUS_MESSAGE}"
+
+                pm2SaveAndLogs()
             } else {
                 // If project is not live, set rollback status to true
                 ROLLBACK_STATUS = true
@@ -134,9 +131,23 @@ class NodeJSDeployment implements Serializable {
             script.sh "npm i"
             script.sh "${node}/pm2 reload ${config.projectName}"
 
+            // Wait for the project to start
+            sleep(15)
+            pm2SaveAndLogs()
+
             STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
             script.echo "${STATUS_MESSAGE}"
         // }
+    }
+
+    // Function to print pm2 logs
+    def pm2SaveAndLogs(lines = 25) {
+        def node = nodeJSHelper.getNodeJSPath()
+        
+        script.sh "${node}/pm2 save"
+
+        echo "======================== PM2 LOGS ========================"
+        script.sh "${node}/pm2 logs ${config.projectName} --lines ${lines} --nostream"
     }
 
     def getStatus() {
