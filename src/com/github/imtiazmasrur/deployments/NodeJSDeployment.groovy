@@ -3,6 +3,20 @@ package com.github.imtiazmasrur.deployments
 import com.github.imtiazmasrur.helpers.GitHelper
 import com.github.imtiazmasrur.helpers.NodeJSHelper
 
+/**
+ * Class to handle Node.js project deployment, health check, and rollback using Git tags.
+ * usage:
+ * def nodeJS = new NodeJSDeployment(this, config)
+ * 
+ * the config map must contain:
+ * - nodeJSVersion: The version of Node.js to use.
+ * - nodeJSPath: The base path where Node.js versions are installed.
+ * - projectName: The name of the project (used for PM2 process management).
+ * - projectDirectory: The directory of the project to deploy.
+ *
+ * the config map can optionally contain:
+ * - isBuildRequired: Boolean to indicate if build step is required.
+ */
 class NodeJSDeployment implements Serializable {
 
     def static ROLLBACK_STATUS = false
@@ -32,6 +46,7 @@ class NodeJSDeployment implements Serializable {
             ]
         )
         this.config = config
+        this.isBuildRequired = config.isBuildRequired ?: false
     }
 
     def checkoutCode() {
@@ -80,6 +95,7 @@ class NodeJSDeployment implements Serializable {
     }
 
     def build() {
+        script.sh "npm run build"
     }
 
     def deploy() {
@@ -87,6 +103,9 @@ class NodeJSDeployment implements Serializable {
             try {
                 def node = nodeJSHelper.getNodeJSPath()
                 script.sh "npm i"
+                if (isBuildRequired) {
+                    build()
+                }
                 script.sh "${node}/pm2 reload ${config.projectName}"
 
                 STATUS_MESSAGE = "🚀 Project deployed successfully. 😎 ${LATEST_TAG}"
@@ -129,6 +148,9 @@ class NodeJSDeployment implements Serializable {
 
             script.sh "git checkout tags/${BEFORE_LAST_TAG}"
             script.sh "npm i"
+            if (isBuildRequired) {
+                build()
+            }
             script.sh "${node}/pm2 reload ${config.projectName}"
 
             // Wait for the project to start
