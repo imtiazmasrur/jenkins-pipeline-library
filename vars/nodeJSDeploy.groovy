@@ -33,8 +33,8 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  *     DEPLOYMENT_STATUS: true,
  *     ROLLBACK_STATUS: false,
  *     STATUS_MESSAGE: "🚀 Project deployed successfully. 😎 v1.2.3"
- *     LATEST_TAG: "v1.2.3",
- *     BEFORE_LAST_TAG: "v1.2.2"
+ *     CURRENT_TAG: "v1.2.2",
+ *     LATEST_TAG: "v1.2.3"
  * ]
  */
 def call(Map config) {

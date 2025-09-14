@@ -22,8 +22,8 @@ class NodeJSDeployment implements Serializable {
     def static ROLLBACK_STATUS = false
     def static DEPLOYMENT_STATUS = false
     def static STATUS_MESSAGE = ""
+    def static CURRENT_TAG = ""
     def static LATEST_TAG = ""
-    def static BEFORE_LAST_TAG = ""
 
     def script
     def gitHelper
@@ -54,6 +54,7 @@ class NodeJSDeployment implements Serializable {
             gitHelper.gitStatus()
             
             def currentTag = gitHelper.getCurrentTag()
+            CURRENT_TAG = currentTag
 
             // if current tag is not found or null then throw error
             if (!currentTag || currentTag == "") {
@@ -68,11 +69,7 @@ class NodeJSDeployment implements Serializable {
             gitHelper.gitFetch()
 
             def latestTag = gitHelper.getLatestTag()
-            def beforeLastTag = gitHelper.getBeforeLastTag()
-            
-            // Set environment variables
             LATEST_TAG = latestTag
-            BEFORE_LAST_TAG = beforeLastTag
 
             if (currentTag != latestTag) {
                 // Checkout to the latest tag
@@ -146,7 +143,7 @@ class NodeJSDeployment implements Serializable {
         // if (ROLLBACK_STATUS) {
             def node = nodeJSHelper.getNodeJSPath()
 
-            script.sh "git checkout tags/${BEFORE_LAST_TAG}"
+            script.sh "git checkout tags/${CURRENT_TAG}"
             script.sh "npm i"
             if (config.isBuildRequired) {
                 build()
@@ -157,7 +154,7 @@ class NodeJSDeployment implements Serializable {
             sleep(15)
             pm2SaveAndLogs()
 
-            STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${BEFORE_LAST_TAG}"
+            STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${CURRENT_TAG}"
             script.echo "${STATUS_MESSAGE}"
         // }
     }
@@ -177,8 +174,8 @@ class NodeJSDeployment implements Serializable {
                 "ROLLBACK_STATUS"  : ROLLBACK_STATUS,
                 "DEPLOYMENT_STATUS": DEPLOYMENT_STATUS,
                 "STATUS_MESSAGE"   : STATUS_MESSAGE,
-                "LATEST_TAG"       : LATEST_TAG,
-                "BEFORE_LAST_TAG"  : BEFORE_LAST_TAG
+                "CURRENT_TAG"      : CURRENT_TAG,
+                "LATEST_TAG"       : LATEST_TAG
         ]
     }
 
