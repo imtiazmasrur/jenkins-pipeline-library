@@ -64,6 +64,9 @@ class NodeJSDeployment implements Serializable {
 
             script.echo "⚡️ Current Tag: ${currentTag}"
 
+            // Fetch the latest changes
+            gitHelper.gitFetch()
+
             def latestTag = gitHelper.getLatestTag()
             def beforeLastTag = gitHelper.getBeforeLastTag()
             
@@ -72,8 +75,6 @@ class NodeJSDeployment implements Serializable {
             BEFORE_LAST_TAG = beforeLastTag
 
             if (currentTag != latestTag) {
-                // Fetch the latest changes
-                gitHelper.gitFetch()
                 // Checkout to the latest tag
                 gitHelper.gitCheckout(LATEST_TAG)
 
