@@ -37,14 +37,7 @@ class NodeJSDeployment implements Serializable {
 
         this.script = script
         this.gitHelper = new GitHelper(script)
-        this.nodeJSHelper = new NodeJSHelper(
-            script,
-            [
-                nodeJSVersion: config.nodeJSVersion,
-                nodeJSPath: config.nodeJSPath,
-                projectName: config.projectName
-            ]
-        )
+        this.nodeJSHelper = new NodeJSHelper(script, config)
         this.config = config
     }
 
@@ -62,8 +55,6 @@ class NodeJSDeployment implements Serializable {
                 script.echo "${STATUS_MESSAGE}"
                 throw new Exception(STATUS_MESSAGE)
             }
-
-            script.echo "⚡️ Current Tag: ${currentTag}"
 
             // Fetch the latest changes
             gitHelper.gitFetch()
@@ -91,18 +82,10 @@ class NodeJSDeployment implements Serializable {
         }
     }
 
-    def build() {
-        script.sh "npm run build"
-    }
-
     def deploy() {
         try {
-            def node = nodeJSHelper.getNodeJSPath()
-            script.sh "npm i"
-            if (config.isBuildRequired) {
-                build()
-            }
-            script.sh "${node}/pm2 reload ${config.projectName}"
+            // Execute deployment process
+            nodeJSHelper.executeDeployment()
 
             STATUS_MESSAGE = "🚀 Project deployed successfully. 😎 ${LATEST_TAG}"
             script.echo "${STATUS_MESSAGE}"
@@ -118,7 +101,7 @@ class NodeJSDeployment implements Serializable {
     def healthCheck() {
         // Wait for the project to start
         sleep(15)
-        def projectStatus = nodeJSHelper.healthStatus(config.projectName)
+        def projectStatus = nodeJSHelper.healthStatus()
 
         // Check if the project is live
         if (projectStatus) {
@@ -136,14 +119,11 @@ class NodeJSDeployment implements Serializable {
     }
 
     def rollback() {
-        def node = nodeJSHelper.getNodeJSPath()
+        // Checkout to the current tag
+        gitHelper.gitCheckout(CURRENT_TAG)
 
-        script.sh "git checkout tags/${CURRENT_TAG}"
-        script.sh "npm i"
-        if (config.isBuildRequired) {
-            build()
-        }
-        script.sh "${node}/pm2 reload ${config.projectName}"
+        // Execute deployment process
+        nodeJSHelper.executeDeployment()
 
         // Wait for the project to start
         sleep(15)

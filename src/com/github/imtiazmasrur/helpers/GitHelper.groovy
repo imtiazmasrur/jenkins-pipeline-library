@@ -27,7 +27,9 @@ class GitHelper implements Serializable {
 
     // Function to get the current Git tag
     def getCurrentTag() {
-        return script.sh(script: "git describe --tags --abbrev=0", returnStdout: true).trim()
+        def currentTag = script.sh(script: "git describe --tags --abbrev=0", returnStdout: true).trim()
+        script.echo "⚡️ Current Tag: ${currentTag}"
+        return currentTag
     }
 
     // Function to get the latest Git tag

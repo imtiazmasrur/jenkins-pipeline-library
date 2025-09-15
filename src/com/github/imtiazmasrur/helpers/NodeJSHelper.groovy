@@ -1,7 +1,13 @@
 package com.github.imtiazmasrur.helpers
 
 /**
- * Utility class for Node.js related operations such as checking project status.
+ * Utility class for Node.js related operations.
+ *
+ * Parameters:
+ * - nodeJSVersion: The version of Node.js to use.
+ * - nodeJSPath: The base path where Node.js versions are installed.
+ * - projectName: The name of the project (used for PM2 process management).
+ * - isBuildRequired: Boolean to indicate if build step is required (default is false).
  */
 class NodeJSHelper implements Serializable {
 
@@ -22,8 +28,19 @@ class NodeJSHelper implements Serializable {
         return "${config.nodeJSPath}/v${config.nodeJSVersion}/bin"
     }
 
+    // Execute the Node.js deployment process
+    def executeDeployment() {
+        def node = getNodeJSPath()
+
+        script.sh "npm i"
+        if (config.isBuildRequired) {
+            script.sh "npm run build"
+        }
+        script.sh "${node}/pm2 reload ${config.projectName}"
+    }
+
     // Function to check the project is live
-    def healthStatus(projectName) {
+    def healthStatus() {
         def node = getNodeJSPath()
         return script.sh(script: "${node}/pm2 pid ${config.projectName} | head -n 1", returnStdout: true).trim()
     }
