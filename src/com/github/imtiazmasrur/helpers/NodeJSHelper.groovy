@@ -28,4 +28,14 @@ class NodeJSHelper implements Serializable {
         return script.sh(script: "${node}/pm2 pid ${config.projectName} | head -n 1", returnStdout: true).trim()
     }
 
+    // Function to print pm2 logs
+    def pm2SaveAndLogs(lines = 25) {
+        def node = getNodeJSPath()
+        
+        script.sh "${node}/pm2 save"
+
+        script.echo "======================== PM2 LOGS ========================"
+        script.sh "${node}/pm2 logs ${config.projectName} --lines ${lines} --nostream"
+    }
+
 }

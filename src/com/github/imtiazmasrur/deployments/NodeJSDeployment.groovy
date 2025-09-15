@@ -125,7 +125,7 @@ class NodeJSDeployment implements Serializable {
             STATUS_MESSAGE = "🟢 Project is Live. 😎 ${LATEST_TAG}"
             script.echo "${STATUS_MESSAGE}"
 
-            pm2SaveAndLogs()
+            nodeJSHelper.pm2SaveAndLogs()
         } else {
             // If project is not live, set rollback status to true
             ROLLBACK_STATUS = true
@@ -147,20 +147,10 @@ class NodeJSDeployment implements Serializable {
 
         // Wait for the project to start
         sleep(15)
-        pm2SaveAndLogs()
+        nodeJSHelper.pm2SaveAndLogs()
 
         STATUS_MESSAGE = "🚀 Rollback completed successfully. 😎 ${CURRENT_TAG}"
         script.echo "${STATUS_MESSAGE}"
-    }
-
-    // Function to print pm2 logs
-    def pm2SaveAndLogs(lines = 25) {
-        def node = nodeJSHelper.getNodeJSPath()
-        
-        script.sh "${node}/pm2 save"
-
-        script.echo "======================== PM2 LOGS ========================"
-        script.sh "${node}/pm2 logs ${config.projectName} --lines ${lines} --nostream"
     }
 
     def getStatus() {
