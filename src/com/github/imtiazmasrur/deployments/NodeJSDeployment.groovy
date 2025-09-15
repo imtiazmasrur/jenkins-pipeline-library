@@ -8,12 +8,12 @@ import com.github.imtiazmasrur.helpers.NodeJSHelper
  * usage:
  * def nodeJS = new NodeJSDeployment(this, config)
  * 
- * the config map must contain:
- * - nodeJSVersion: The version of Node.js to use.
- * - nodeJSPath: The base path where Node.js versions are installed.
- * - projectName: The name of the project (used for PM2 process management).
- * - projectDirectory: The directory of the project to deploy.
- * - isBuildRequired: Boolean to indicate if build step is required (default is false).
+ * Parameters: the config map contains:
+ * - nodeJSVersion (required): The version of Node.js to use.
+ * - nodeJSPath (required): The base path where Node.js versions are installed.
+ * - projectName (required): The name of the project (used for PM2 process management).
+ * - projectDirectory (required): The directory of the project to deploy.
+ * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false).
  *
  */
 class NodeJSDeployment implements Serializable {
