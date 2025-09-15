@@ -13,9 +13,8 @@ import com.github.imtiazmasrur.helpers.NodeJSHelper
  * - nodeJSPath: The base path where Node.js versions are installed.
  * - projectName: The name of the project (used for PM2 process management).
  * - projectDirectory: The directory of the project to deploy.
+ * - isBuildRequired: Boolean to indicate if build step is required (default is false).
  *
- * the config map can optionally contain:
- * - isBuildRequired: Boolean to indicate if build step is required.
  */
 class NodeJSDeployment implements Serializable {
 
