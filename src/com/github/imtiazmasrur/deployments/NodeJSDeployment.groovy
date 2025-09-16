@@ -60,7 +60,7 @@ class NodeJSDeployment implements Serializable {
             if (!currentTag || currentTag == "") {
                 STATUS_MESSAGE = "⚠️ No tag found. Please check your project directory and logs: ${config.projectDirectory}."
                 script.echo "${STATUS_MESSAGE}"
-                throw new Exception(STATUS_MESSAGE)
+                throw new Exception(e)
             }
 
             def latestTag = gitHelper.getLatestTag()
@@ -82,7 +82,7 @@ class NodeJSDeployment implements Serializable {
         } catch (Exception e) {
             STATUS_MESSAGE = "⛔ Failed to run the project, please check your project directory and logs: ${config.projectDirectory}."
             script.echo "${STATUS_MESSAGE}"
-            throw new Exception(STATUS_MESSAGE)
+            throw new Exception(e)
         }
     }
 
@@ -98,7 +98,7 @@ class NodeJSDeployment implements Serializable {
             ROLLBACK_STATUS = true
 
             STATUS_MESSAGE = "↩️ Failed to deploy. Preparing for Rollback."
-            script.echo "${STATUS_MESSAGE}"
+            script.echo "${STATUS_MESSAGE} ${e}"
         }
     }
 
