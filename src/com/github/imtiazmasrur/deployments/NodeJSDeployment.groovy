@@ -42,21 +42,26 @@ class NodeJSDeployment implements Serializable {
 
     def checkoutCode() {
         try {
-            // Check git status
+            // If not git repository then throw error
+            if (!gitHelper.isGitRepo()) {
+                STATUS_MESSAGE = "❌ Not a git repo. Please check your project directory and logs: ${config.projectDirectory}."
+                script.echo "${STATUS_MESSAGE}"
+                throw new Exception(STATUS_MESSAGE)
+            }
+
+            // Check git status and fetch the latest changes
             gitHelper.gitStatus()
+            gitHelper.gitFetch()
             
             def currentTag = gitHelper.getCurrentTag()
             CURRENT_TAG = currentTag
 
             // if current tag is not found or null then throw error
             if (!currentTag || currentTag == "") {
-                STATUS_MESSAGE = "⛔ Current tag not found, please check your project directory and logs: ${config.projectDirectory}."
+                STATUS_MESSAGE = "⚠️ No tag found. Please check your project directory and logs: ${config.projectDirectory}."
                 script.echo "${STATUS_MESSAGE}"
                 throw new Exception(STATUS_MESSAGE)
             }
-
-            // Fetch the latest changes
-            gitHelper.gitFetch()
 
             def latestTag = gitHelper.getLatestTag()
             LATEST_TAG = latestTag

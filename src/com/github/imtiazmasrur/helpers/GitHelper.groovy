@@ -10,12 +10,25 @@ class GitHelper implements Serializable {
         this.script = script
     }
 
+    // Function to check is it a git repo
+    def isGitRepo() {
+        return script.sh(script: "git rev-parse --git-dir", returnStdout: true).trim()
+    }
+
+    // Function to count total tags
+    def getTotalTags() {
+        def totalTags = script.sh(script: "git tag | wc -l", returnStdout: true).trim()
+        script.echo "🔆 Total Tag(s): ${totalTags}"
+        return totalTags
+    }
+
+    // Function to check git status
     def gitStatus() {
         script.sh "git status"
         script.echo "✅ Git status checked successfully."
     }
 
-    // function to git fetch
+    // Function to git fetch
     def gitFetch() {
         script.sh "git fetch --all --tags"
         script.echo "🪣 Git fetch completed successfully."
