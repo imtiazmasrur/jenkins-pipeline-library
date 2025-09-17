@@ -39,6 +39,7 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  */
 def call(Map config) {
     def nodeJS = new NodeJSDeployment(this, config)
+    def deploymentStatus = nodeJS.getStatus()
 
     stage('Check Git Status, CheckOut Latest Tag...') {
         dir("${config.projectDirectory}") {
@@ -67,5 +68,5 @@ def call(Map config) {
         }
     }
 
-    return nodeJS.getStatus()
+    return deploymentStatus
 }
