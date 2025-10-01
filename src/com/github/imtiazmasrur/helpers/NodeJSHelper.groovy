@@ -7,7 +7,8 @@ package com.github.imtiazmasrur.helpers
  * - nodeJSVersion: The version of Node.js to use.
  * - nodeJSPath: The base path where Node.js versions are installed.
  * - projectName: The name of the project (used for PM2 process management).
- * - isBuildRequired: Boolean to indicate if build step is required (default is false).
+ * - additinalBuildCommands (optional): Additional commands to run after the build command.
+ * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false).
  */
 class NodeJSHelper implements Serializable {
 
@@ -33,6 +34,9 @@ class NodeJSHelper implements Serializable {
         def node = getNodeJSPath()
 
         script.sh "npm i"
+        if (config.additinalBuildCommands) {
+            script.sh "${config.additinalBuildCommands}"
+        }
         if (config.isBuildRequired) {
             script.sh "npm run build"
         }
