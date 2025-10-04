@@ -1,6 +1,7 @@
 package com.github.imtiazmasrur.deployments
 
 import com.github.imtiazmasrur.helpers.GitHelper
+import com.github.imtiazmasrur.states.DeploymentState
 
 /**
  * Helper class to manage deployment operations such as checking out code from Git.
