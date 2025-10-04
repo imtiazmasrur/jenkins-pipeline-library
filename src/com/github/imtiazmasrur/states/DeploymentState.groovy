@@ -1,7 +1,7 @@
 package com.github.imtiazmasrur.states
 
 class DeploymentState implements Serializable {
-    
+
     boolean rollbackStatus = false
     boolean deploymentStatus = false
     String statusMessage = ""

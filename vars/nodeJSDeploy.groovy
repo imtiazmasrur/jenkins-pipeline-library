@@ -5,12 +5,12 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  *
  * Usage:
  * nodeJSDeploy(
- *     nodeJSVersion: '20.18.0',
- *     nodeJSPath: '/root/.nvm/versions/node',
- *     projectName: 'my-node-app',
- *     projectDirectory: '/var/www/my-node-app',
- *     additinalBuildCommands: 'npm run lint && npm run test', // Optional
- *     isBuildRequired: true // Optional, default is false. This will run 'npm run build' if true.
+ *     nodeJSVersion: "20.18.0",
+ *     nodeJSPath: "/root/.nvm/versions/node",
+ *     projectName: "my-node-app",
+ *     projectDirectory: "/var/www/my-node-app",
+ *     additinalBuildCommands: "npm run lint && npm run test", // Optional
+ *     isBuildRequired: true // Optional, default is false. This will run "npm run build" if true.
  * )
  *
  * The function will:
@@ -26,7 +26,7 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  * - projectName: The name of the project (used for PM2 process management).
  * - projectDirectory: The directory of the project to deploy.
  * - additinalBuildCommands (optional): Additional commands to run after the build command.
- * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false). This will run 'npm run build' if true.
+ * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false). This will run "npm run build" if true.
  *
  * Returns:
  * A map containing deployment status, rollback status, and status message.
@@ -42,27 +42,27 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
 def call(Map config) {
     NodeJSDeployment nodeJS = new NodeJSDeployment(this, config)
 
-    stage('Check Git Status, CheckOut Latest Tag...') {
+    stage("Check Git Status, CheckOut Latest Tag...") {
         dir("${config.projectDirectory}") {
             nodeJS.checkoutCode()
         }
     }
     if (nodeJS.state.deploymentStatus) {
-        stage('Deployment Started...') {
+        stage("Deployment Started...") {
             dir("${config.projectDirectory}") {
                 nodeJS.deploy()
             }
         }
     }
     if (nodeJS.state.deploymentStatus && !nodeJS.state.rollbackStatus) {
-        stage('Health Check...') {
+        stage("Health Check...") {
             dir("${config.projectDirectory}") {
                 nodeJS.healthCheck()
             }
         }
     }
-    if (nodeJS.state.rollbackStatus){
-        stage('Rollback Started...') {
+    if (nodeJS.state.rollbackStatus) {
+        stage("Rollback Started...") {
             dir("${config.projectDirectory}") {
                 nodeJS.rollback()
             }
