@@ -4,7 +4,8 @@ package com.github.imtiazmasrur.helpers
  * Utility class for Git related operations such as fetching tags.
  */
 class GitHelper implements Serializable {
-    def script
+
+    Object script
 
     GitHelper(script) {
         this.script = script
