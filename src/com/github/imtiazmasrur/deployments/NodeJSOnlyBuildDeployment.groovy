@@ -8,7 +8,7 @@ import com.github.imtiazmasrur.helpers.DeploymentHelper
 /**
  * Class to handle Node.js project deployment, health check, and rollback using Git tags.
  * usage:
- * def nodeJS = new NodeJSOnlyBuildDeployment(this, config)
+ * NodeJSOnlyBuildDeployment nodeJSOnlyBuild = new NodeJSOnlyBuildDeployment(this, config)
  *
  * Parameters: the config map contains:
  * - nodeJSVersion (required): The version of Node.js to use.

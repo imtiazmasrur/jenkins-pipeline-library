@@ -1,6 +1,5 @@
-package com.github.imtiazmasrur.deployments
+package com.github.imtiazmasrur.helpers
 
-import com.github.imtiazmasrur.helpers.GitHelper
 import com.github.imtiazmasrur.states.DeploymentState
 
 /**
@@ -35,7 +34,7 @@ class DeploymentHelper implements Serializable {
             // Check git status and fetch the latest changes
             gitHelper.gitStatus()
             gitHelper.gitFetch()
-            
+
             def currentTag = gitHelper.getCurrentTag()
             state.currentTag = currentTag
 
@@ -64,7 +63,7 @@ class DeploymentHelper implements Serializable {
             }
         } catch (Exception e) {
             state.statusMessage = "⛔ Failed to run the project, please check your project directory and logs: ${config.projectDirectory}."
-            script.echo "${state.statusMessage}"
+            script.echo "${state.statusMessage} ${e}"
             throw new Exception(e)
         }
     }
