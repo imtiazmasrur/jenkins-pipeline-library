@@ -7,8 +7,9 @@ package com.github.imtiazmasrur.helpers
  * - nodeJSVersion (required): The version of Node.js to use.
  * - nodeJSPath (required): The base path where Node.js versions are installed.
  * - projectName (required): The name of the project (used for PM2 process management).
- * - additinalBuildCommands (optional): Additional commands to run after the build command.
  * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false).
+ * - buildCommand (optional): Build command for your project. Default command is "npm run build".
+ * - additinalBuildCommands (optional): Additional commands to run after the build command.
  */
 class NodeJSHelper implements Serializable {
 
@@ -42,6 +43,16 @@ class NodeJSHelper implements Serializable {
             script.sh "npm run build"
         }
         script.sh "${node}/pm2 reload ${config.projectName}"
+    }
+
+    // Execute the Node.js only build process
+    def onlyBuild() {
+        script.sh "npm i"
+        if (config.buildCommand) {
+            script.sh "${config.buildCommand}"
+        } else {
+            script.sh "npm run build"
+        }
     }
 
     // Function to check the project is live

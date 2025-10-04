@@ -8,17 +8,16 @@ import com.github.imtiazmasrur.helpers.DeploymentHelper
 /**
  * Class to handle Node.js project deployment, health check, and rollback using Git tags.
  * usage:
- * def nodeJS = new NodeJSDeployment(this, config)
+ * def nodeJS = new NodeJSOnlyBuildDeployment(this, config)
  *
  * Parameters: the config map contains:
  * - nodeJSVersion (required): The version of Node.js to use.
  * - nodeJSPath (required): The base path where Node.js versions are installed.
  * - projectName (required): The name of the project (used for PM2 process management).
  * - projectDirectory (required): The directory of the project to deploy.
- * - additinalBuildCommands (optional): Additional commands to run after the build command.
- * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false). This will run "npm run build" if true.
+ * - buildCommand (optional): Build command for your project. Default command is "npm run build".
  */
-class NodeJSDeployment implements Serializable {
+class NodeJSOnlyBuildDeployment implements Serializable {
 
     Object script
     Map config
@@ -26,7 +25,7 @@ class NodeJSDeployment implements Serializable {
     NodeJSHelper nodeJSHelper
     DeploymentHelper deploymentHelper
 
-    NodeJSDeployment(script, Map config) {
+    NodeJSOnlyBuildDeployment(script, Map config) {
         if (!config.nodeJSVersion || !config.nodeJSPath || !config.projectName || !config.projectDirectory) {
             throw new Exception("nodeJSVersion, nodeJSPath, projectName, and projectDirectory are required.")
         }
@@ -44,8 +43,8 @@ class NodeJSDeployment implements Serializable {
 
     def deploy() {
         try {
-            // Execute deployment process
-            nodeJSHelper.executeDeployment()
+            // Execute only build process
+            nodeJSHelper.onlyBuild()
 
             state.statusMessage = state.deploySuccessMessage()
             script.echo "${state.statusMessage}"
@@ -58,37 +57,13 @@ class NodeJSDeployment implements Serializable {
         }
     }
 
-    def healthCheck() {
-        // Wait for the project to start
-        sleep(15)
-        def projectStatus = nodeJSHelper.healthStatus()
-
-        // Check if the project is live
-        if (projectStatus) {
-            state.statusMessage = state.healthCheckSuccessMessage()
-            script.echo "${state.statusMessage}"
-
-            nodeJSHelper.pm2SaveAndLogs()
-        } else {
-            // If project is not live, set rollback status to true
-            state.rollbackStatus = true
-
-            state.statusMessage = state.healthCheckFailureMessage()
-            script.echo "${state.statusMessage}"
-        }
-    }
-
     def rollback() {
         GitHelper gitHelper = new GitHelper(script)
         // Checkout to the current tag
         gitHelper.gitCheckout(state.currentTag)
 
-        // Execute deployment process
-        nodeJSHelper.executeDeployment()
-
-        // Wait for the project to start
-        sleep(15)
-        nodeJSHelper.pm2SaveAndLogs()
+        // Execute only build process
+        nodeJSHelper.onlyBuild()
 
         state.statusMessage = state.rollbackSuccessMessage()
         script.echo "${state.statusMessage}"
