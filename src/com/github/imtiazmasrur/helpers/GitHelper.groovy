@@ -35,6 +35,12 @@ class GitHelper implements Serializable {
         script.echo "🪣 Git fetch completed successfully."
     }
 
+    // Function to git restore to clean state
+    def gitRestore() {
+        script.sh "git checkout ."
+        script.echo "🔄 Git restore to clean state completed successfully."
+    }
+
     // Function to git checkout to a tag
     def gitCheckout(tag) {
         script.sh "git checkout tags/${tag}"
