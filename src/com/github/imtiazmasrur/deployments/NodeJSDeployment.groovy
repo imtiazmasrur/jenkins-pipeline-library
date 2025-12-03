@@ -80,6 +80,10 @@ class NodeJSDeployment implements Serializable {
 
     def rollback() {
         GitHelper gitHelper = new GitHelper(script)
+
+        // Restore git to clean state
+        gitHelper.gitRestore()
+
         // Checkout to the current tag
         gitHelper.gitCheckout(state.currentTag)
 
