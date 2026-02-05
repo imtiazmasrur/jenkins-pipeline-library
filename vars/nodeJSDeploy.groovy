@@ -9,8 +9,9 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  *     nodeJSPath: "/root/.nvm/versions/node",
  *     projectName: "my-node-app",
  *     projectDirectory: "/var/www/my-node-app",
- *     additinalBuildCommands: "npm run lint && npm run test", // Optional
+ *     additionalBuildCommands: "npm run lint && npm run test", // Optional
  *     isBuildRequired: true // Optional, default is false. This will run "npm run build" if true.
+ *     afterBuildCommands: "echo 'Build completed'" // Optional
  * )
  *
  * The function will:
@@ -25,8 +26,9 @@ import com.github.imtiazmasrur.deployments.NodeJSDeployment
  * - nodeJSPath: The base path where Node.js versions are installed.
  * - projectName: The name of the project (used for PM2 process management).
  * - projectDirectory: The directory of the project to deploy.
- * - additinalBuildCommands (optional): Additional commands to run after the build command.
+ * - additionalBuildCommands (optional): Additional commands to run after the build command.
  * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false). This will run "npm run build" if true.
+ * - afterBuildCommands (optional): Additional commands to run after the build step.
  *
  * Returns:
  * A map containing deployment status, rollback status, and status message.
