@@ -9,7 +9,8 @@ package com.github.imtiazmasrur.helpers
  * - projectName (required): The name of the project (used for PM2 process management).
  * - isBuildRequired (optional): Boolean to indicate if build step is required (default is false).
  * - buildCommand (optional): Build command for your project. Default command is "npm run build".
- * - additinalBuildCommands (optional): Additional commands to run after the build command.
+ * - additionalBuildCommands (optional): Additional commands to run after the build command.
+ * - afterBuildCommands (optional): Additional commands to run after the build step.
  */
 class NodeJSHelper implements Serializable {
 
@@ -36,11 +37,14 @@ class NodeJSHelper implements Serializable {
         def node = getNodeJSPath()
 
         script.sh "npm i"
-        if (config.additinalBuildCommands) {
-            script.sh "${config.additinalBuildCommands}"
+        if (config.additionalBuildCommands) {
+            script.sh "${config.additionalBuildCommands}"
         }
         if (config.isBuildRequired) {
             script.sh "npm run build"
+        }
+        if (config.afterBuildCommands) {
+            script.sh "${config.afterBuildCommands}"
         }
         script.sh "${node}/pm2 reload ${config.projectName}"
     }
