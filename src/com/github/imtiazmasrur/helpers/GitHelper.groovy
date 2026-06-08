@@ -37,7 +37,7 @@ class GitHelper implements Serializable {
 
     // Function to git restore to clean state
     def gitRestore() {
-        script.sh "git checkout ."
+        script.sh "git checkout -f ."
         script.echo "🔄 Git restore to clean state completed successfully."
     }
 

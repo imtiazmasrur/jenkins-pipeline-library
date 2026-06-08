@@ -31,8 +31,13 @@ class DeploymentHelper implements Serializable {
                 throw new Exception(state.statusMessage)
             }
 
-            // Check git status and fetch the latest changes
+            // Check git status
             gitHelper.gitStatus()
+
+            // Clean the Repo before fetch
+            gitHelper.gitRestore()
+
+            // Fetch the latest changes
             gitHelper.gitFetch()
 
             def currentTag = gitHelper.getCurrentTag()
