@@ -36,7 +36,7 @@ class NodeJSHelper implements Serializable {
     def executeDeployment() {
         def node = getNodeJSPath()
 
-        script.sh "npm i"
+        script.sh "npm i --ignore-scripts"
         if (config.additionalBuildCommands) {
             script.sh "${config.additionalBuildCommands}"
         }
@@ -51,7 +51,7 @@ class NodeJSHelper implements Serializable {
 
     // Execute the Node.js only build process
     def onlyBuild() {
-        script.sh "npm i"
+        script.sh "npm i --ignore-scripts"
         if (config.buildCommand) {
             script.sh "${config.buildCommand}"
         } else {
